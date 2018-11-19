@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>雇员列表</title>
+    <script src="../jquery.min.js"></script>
+    <script>
+        $(function () {
+            $.ajax({
+                url:"/sb/emp/list",
+                type:"POST",
+                dataType:"json",
+                success:function (data) {
+                    if(data!=''){
+                        var str="";
+                        for (var i=0;i<data.length;i++){
+                            str+="<tr align=\"center\"><td class='no'>"+data[i].empNo+"</td><td>"+data[i].ename+ "</td><td>"+data[i].job+ "</td><td>"+data[i].salary+
+                                "</td><td><input type='button' value='修改' class='up'>&nbsp;&nbsp;&nbsp;&nbsp;" +
+                                "<input type='button' value='删除'  class='del'></td></tr>";
+                        }
+                        $("#tby").append(str);
+                    }
+                }
+            })
+
+            /*修改方法*/
+            $("#table").on("click",".up",function () {
+                var empno=$(this).parent().parent().find(".no").html();
+                $.ajax({
+                    url:"/sb/emp/getByNo",
+                    type:"POST",
+                    data:{"empno":empno},
+                    dataType:"json",
+                    success:function (data) {
+                        if(data!=null){
+                            location.href="/sb/emp/toUpdate";
+                        }
+
+                    }
+                })
+            })
+
+            /*删除方法*/
+            $("#table").on("click",".del",function () {
+                var empno=$(this).parent().parent().find(".no").html();
+                confirm("确定删除吗？");
+                //alert(empno);
+                $.ajax({
+                    url:"/sb/emp/delete",
+                    type:"POST",
+                    data:{"empno":empno},
+                    dataType:"json",
+                    success:function (data) {
+                        //alert(data.info);
+                        location.reload();
+                    }
+                })
+            })
+        })
+
+
+    </script>
+</head>
+<body>
+    <center>
+        <h3>雇员列表</h3>
+        <a href="/sb/add.html">新增</a>
+        <div><img src="/sb/emp/show?fileName=talks.jpg"></div>
+        <table border="1" id="table">
+            <thead>
+                <tr align="center">
+                    <td>员工编号</td>
+                    <td>姓名</td>
+                    <td>职位</td>
+                    <td>薪资</td>
+                    <td>操作</td>
+                </tr>
+            </thead>
+            <tbody id="tby"></tbody>
+        </table>
+    </center>
+</body>
+</html>

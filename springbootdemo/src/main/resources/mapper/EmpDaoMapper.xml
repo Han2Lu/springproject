@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.han.sm.dao.EmpDao">
+    <!--查询方法-->
+    <select id="getList" resultType="emp">
+        select empno,ename,job,sal as salary,comm,to_char(hiredate,'yyyy-mm-dd') as hireDate,
+        (select ename from emp b where a.mgr=b.empno) as mgrName,
+        (select dname from dept  where deptno=a.deptno) as deptName
+        from emp a
+        <where>
+            <if test="ename!=null and ename!=''">
+                and ename like '%'||#{ename}||'%'
+            </if>
+        </where>
+        <!--${}取值，相当于占位符，原封不动的取出数据，sql注入  #{}取值，防止sql注入，相当于给值加上了‘’-->
+        order by ${sort} ${order}
+    </select>
+
+    <!--调用存储过程，根据部门编号获取人员列表-->
+    <select id="getProListByDeptNo" parameterType="map" statementType="CALLABLE">
+        call pro_query_emp_bydeptno(#{deptNo,jdbcType=INTEGER,mode=IN},#{csrEmp,mode=OUT,jdbcType=CURSOR,javaType=java.sql.ResultSet,resultMap=empResult})
+    </select>
+    <!--结果映射-->
+    <resultMap id="empResult" type="emp">
+        <id column="empno" property="empNo"></id>
+        <result column="ename" property="ename"></result>
+        <result column="job" property="job"></result>
+        <result column="sal" property="salary"></result>
+        <result column="hiredate" property="hireDate"></result>
+        <result column="comm" property="comm"></result>
+    </resultMap>
+
+
+    <!--添加方法-->
+    <insert id="add">
+        insert into emp(empno,ename,job,sal) values(#{empNo,jdbcType=INTEGER},#{ename,jdbcType=VARCHAR},#{job,jdbcType=VARCHAR},#{salary,jdbcType=DOUBLE})
+    </insert>
+    <!--根据员工标号查询员工信息-->
+    <select id="getByNo" resultType="map">
+        select * from emp where empno=#{empNo,jdbcType=INTEGER}
+    </select>
+    <update id="update">
+        update emp set ename=#{ename,jdbcType=VARCHAR},job=#{job,jdbcType=VARCHAR},sal=#{salary,jdbcType=DOUBLE} where empno=#{empNo,jdbcType=INTEGER}
+    </update>
+    <delete id="delete">
+        delete from emp where empno=#{empNo,jdbcType=INTEGER}
+    </delete>
+</mapper>

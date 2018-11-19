@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>员工修改</title>
+    <script src="../jquery.min.js"></script>
+    <script>
+        $(function () {
+            $.ajax({
+                url:"/sb/emp/getByNo",
+                type:"POST",
+                data:{"empno":""},
+                success:function (data) {
+                   // alert(data);
+                   $("#empno").val(data.EMPNO);
+                   $("#ename").val(data.ENAME);
+                   $("#job").val(data.JOB);
+                   $("#sal").val(data.SAL);
+                }
+            })
+
+            $("#btn").click(function () {
+                var param={
+                    "empNo":$("#empno").val(),
+                    "ename":$("#ename").val(),
+                    "job":$("#job").val(),
+                    "salary":$("#sal").val()
+                }
+
+                if(param.empno!=''&&param.ename!=''&&param.job!=''&&param.sal!=''){
+                    $.ajax({
+                        url:"/sb/emp/update",
+                        type:"POST",
+                        contentType:"application/json",
+                        dataType:"json",
+                        data:JSON.stringify(param),
+                        success:function(){
+                            //alert(data);
+                            location.href="/sb/emp/toList";
+                        }
+                    })
+                }
+
+            })
+        })
+    </script>
+</head>
+<body>
+<center>
+<h3>修改员工</h3>
+
+<table>
+    <tr>
+        <td>员工编号：</td>
+        <td><input type="text" id="empno" name="empno" readonly="readonly"/></td>
+    </tr>
+    <tr>
+        <td>姓名：</td>
+        <td><input type="text" id="ename" name="ename"/></td>
+    </tr>
+    <tr>
+        <td>职位：</td>
+        <td><input type="text" id="job" name="job"/></td>
+    </tr>
+    <tr>
+        <td>薪资：</td>
+        <td><input type="text" id="sal" name="sal"/></td>
+    </tr>
+    <tr align="right">
+        <td colspan="2">
+            <input type="button" id="btn" value="提交"/>
+        </td>
+    </tr>
+</table>
+</center>
+</body>
+</html>
