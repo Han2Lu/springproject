@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!--把用到的业务类和日志记录类都交给spring管理-->
+    <bean name="deptService" class="com.han.aop.service.DeptServiceImpl"></bean>
+    <bean name="userService" class="com.han.aop.service.UserServiceImpl"></bean>
+    <bean name="logUtil" class="com.han.aop.util.LogUtil"></bean>
+
+    <!--通过spring 提供的aop配置，让业务类和工具类联系起来-->
+    <aop:config>
+        <!--切入点配置  切入点表达式  void代表返回值  *()代表所有方法  ..代表0个或者多个参数-->
+        <aop:pointcut id="pointA" expression="execution(void *(..))"></aop:pointcut>
+        <!--切面配置-->
+        <aop:aspect ref="logUtil">
+            <!--后置通知配置-->
+            <aop:after-returning method="saveLog" pointcut-ref="pointA"></aop:after-returning>
+            <!--前置通知配置-->
+            <!--<aop:before method="beforeAdvice" pointcut-ref="pointA"></aop:before>-->
+            <!--异常通知配置-->
+           <!-- <aop:after-throwing method="exceptionAdvice" throwing="ex" pointcut-ref="pointA"></aop:after-throwing>-->
+            <!--最终通知配置-->
+            <!--<aop:after method="finalAdvice" pointcut-ref="pointA"></aop:after>-->
+            <!--环绕通知配置-->
+            <aop:around method="arroundAdvice" pointcut-ref="pointA"></aop:around>
+        </aop:aspect>
+    </aop:config>
+</beans>
