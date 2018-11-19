@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.han.mb.mapper.DeptDao">
+    <!--部门列表 select 查询标签 id和接口中的方法名称对象一致  parameterType方法的参数 resultType返回值类型-->
+    <select id="getList" resultType="com.han.mb.entity.Dept">
+        SELECT deptno as deptNo,dname,loc from dept
+    </select>
+    <!--部门添加-->
+    <insert id="add" parameterType="com.han.mb.entity.Dept">
+      <!--无效的列类型1111，解决办法，数据库里该列可以为空，在该列上加上jdbcType-->
+        insert into dept values(SEQ_DEPT_ID.NEXTVAL,#{dname,jdbcType=VARCHAR},#{loc})
+    </insert>
+
+    <!--部门更新-->
+    <select id="getById" parameterType="int" resultType="com.han.mb.entity.Dept">
+        SELECT deptno as deptNo,dname,loc from dept where deptno=#{deptNo}
+    </select>
+    <update id="update" parameterType="com.han.mb.entity.Dept">
+        update dept set dname=#{dname},loc=#{loc} where deptno=#{deptNo}
+    </update>
+
+    <!--部门删除  &gt;大于   &lt;小于-->
+    <delete id="delete" parameterType="com.han.mb.entity.Dept">
+        delete from dept where deptno=#{deptNo}
+    </delete>
+    <!--高级映射一对多-->
+    <select id="oneToMany" resultMap="deptAndEmps">
+        select d.dname,d.loc,e.empno,e.ename,e.sal,e.comm,e.job from dept d left join emp e on d.deptno=e.deptno
+    </select>
+    <!-- 一对多的映射配置 -->
+    <resultMap id="deptAndEmps" type="dept">
+        <!--javaType="int" 实体类里面的属性类型 jdbcType="INTEGER" 数据库中的类型  都可以不写-->
+        <id column="deptno" property="deptNo" javaType="int" jdbcType="INTEGER"></id>
+        <result column="dname" property="dname"></result>
+        <result column="loc" property="loc"></result>
+        <collection property="empList" ofType="emp">
+            <id column="empno" property="empNo"></id>
+            <result column="sal" property="salary"></result>
+            <result column="job" property="job"></result>
+            <result column="ename" property="ename"></result>
+            <result column="comm" property="comm"></result>
+        </collection>
+    </resultMap>
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.han.mb.mapper.NewsDao">
+    <select id="getList" resultType="map">
+        select * from tb_news
+    </select>
+    <insert id="add" parameterType="map">
+        insert into tb_news values(SEQ_NEWS_ID.nextval,#{title},#{content},#{typeid},sysdate)
+    </insert>
+    <select id="getById" resultType="map">
+        select * from tb_news where newsid=#{newsid}
+    </select>
+    <update id="update">
+        update tb_news set title=#{title,jdbcType=VARCHAR},content=#{content,jdbcType=VARCHAR},typeid=#{typeid,jdbcType=INTEGER} where newsid=#{newsid,jdbcType=INTEGER}
+    </update>
+    <delete id="delete">
+        delete from tb_news where newsid=#{newsId}
+    </delete>
+    <!--高级映射 多对一 -->
+    <select id="manyToOne" resultMap="newsAndType">
+        select n.*,t.name from TB_NEWS n,tb_newstype t where n.typeid=t.typeid
+    </select>
+    <resultMap id="newsAndType" type="news">
+        <id column="newsid" property="newsId"></id>
+        <result column="title" property="title"></result>
+        <result column="content" property="content"></result>
+        <result column="addtime" property="addTime"></result>
+        <!--association 多对一使用，联想-->
+        <association property="newsType" javaType="NewsType">
+            <id column="typeid" property="typeId"></id>
+            <result column="name" property="typeName"></result>
+        </association>
+    </resultMap>
+</mapper>

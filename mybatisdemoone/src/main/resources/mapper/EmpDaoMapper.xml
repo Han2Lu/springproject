@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.han.mb.mapper.EmpDao">
+    <!--雇员查询-->
+    <select id="getList"  resultType="map">
+        select * from emp
+        <where>
+            <if test="job!=null and job!=''">
+                and job=#{job}
+            </if>
+            <if test="startDate!=null and startDate!=''">
+                and hiredate &gt; to_date(#{startDate},'yyyy-mm-dd')
+            </if>
+            <if test="endDate!=null and endDate!=''">
+                and hiredate &lt; to_date(#{endDate},'yyyy-mm-dd')
+            </if>
+        </where>
+    </select>
+    <!--雇员查询-->
+    <select id="getListByParam"  resultType="map">
+        select * from emp
+       <where>
+           <choose>
+               <when test="empNo!=null and empNo!=0">
+                   and empno=#{empNo}
+               </when>
+               <when test="job!=null and job!=''">
+                   and job=#{job}
+               </when>
+               <when test="startDate!=null and startDate!=''">
+                   and hiredate &gt; to_date(#{startDate},'yyyy-mm-dd')
+               </when>
+               <otherwise>
+                   and deptno=10
+               </otherwise>
+           </choose>
+       </where>
+    </select>
+
+    <select id="getListByList" resultType="map">
+        select * from emp where empno in
+        <foreach collection="list" item="i" open="(" close=")" separator=",">
+            #{i}
+        </foreach>
+    </select>
+</mapper>

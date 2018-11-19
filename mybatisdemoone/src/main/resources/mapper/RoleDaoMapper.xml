@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.han.mb.mapper.RoleDao">
+    <!--多对多-->
+    <select id="manyToMany" resultMap="roleAndPower">
+        select r.id as roleid,r.name  as rname,p.*  from tb_role r left join tb_role_power rp on r.id=rp.roleid
+        left join tb_power p on rp.powerid=p.id
+    </select>
+    <resultMap id="roleAndPower" type="role">
+        <id column="roleid" property="id"></id>
+        <result column="rname" property="name"></result>
+        <collection property="powerList" ofType="power">
+            <id column="id" property="id"></id>
+            <result column="name" property="name"></result>
+            <result column="url" property="url"></result>
+            <result column="pid" property="pid"></result>
+        </collection>
+    </resultMap>
+</mapper>

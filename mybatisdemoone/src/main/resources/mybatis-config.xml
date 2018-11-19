@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--打印Sql-->
+    <settings>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+    </settings>
+    <!--忽略大小写和包路径-->
+    <typeAliases>
+        <package name="com.han.mb.entity"/>
+    </typeAliases>
+    <!--环境配置-->
+    <environments default="development">
+        <!--配置多个数据源-->
+        <environment id="development">
+            <!--事务管理 JDBC事务是自行处理  MANAGER 事务交给容器管理-->
+            <transactionManager type="JDBC"/>
+            <!--数据源配置  POOLED 使用默认连接池-->
+            <dataSource type="POOLED">
+                <property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
+                <property name="url" value="jdbc:oracle:thin:@172.16.22.42:1521:orcl"/>
+                <property name="username" value="scott"/>
+                <property name="password" value="123456"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <!--加载映射文件-->
+    <mappers>
+        <mapper resource="mapper/DeptDaoMapper.xml"/>
+        <mapper resource="mapper/EmpDaoMapper.xml"/>
+        <mapper resource="mapper/NewsDaoMapper.xml"/>
+        <mapper resource="mapper/RoleDaoMapper.xml"/>
+    </mappers>
+</configuration>
